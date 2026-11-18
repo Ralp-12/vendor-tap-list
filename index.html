@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vendor Check-In — Acid Solution</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: #f1f3f6; color: #1c2330; padding: 16px; }
+  .card { max-width: 480px; margin: 0 auto; background: #fff; border-radius: 16px;
+          overflow: hidden; box-shadow: 0 4px 24px rgba(20,30,50,.10); }
+  .header { background: #1f2a3d; color: #fff; padding: 26px 22px 22px; text-align: center; }
+  .avatar { width: 64px; height: 64px; border-radius: 50%; background: #d23b3b;
+            color: #fff; font-size: 26px; font-weight: 700; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .header h1 { font-size: 20px; margin-bottom: 4px; }
+  .header p { font-size: 13px; opacity: .75; }
+  .body { padding: 22px; }
+  .body h2 { font-size: 17px; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #66707f; margin-bottom: 18px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+  label span { font-weight: 400; color: #475569; }
+  input, select, textarea { width: 100%; padding: 12px 14px; font-size: 16px;
+    border: 1.5px solid #d7dce4; border-radius: 10px; background: #fafbfd; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #2f6fed; background: #fff; }
+  textarea { resize: vertical; min-height: 64px; }
+  .btn { width: 100%; margin-top: 22px; padding: 15px; font-size: 17px; font-weight: 700;
+         color: #fff; background: #d23b3b; border: none; border-radius: 12px; cursor: pointer; }
+  .btn:active { transform: scale(.98); }
+  .btn:disabled { opacity: .55; }
+  .err { display: none; margin-top: 12px; font-size: 13px; color: #b3261e;
+         background: #fdecea; border-radius: 8px; padding: 10px 12px; }
+  .pending-banner { display: none; margin-bottom: 14px; font-size: 13px; color: #8a5a00;
+         background: #fff7e6; border: 1px solid #f0d48a; border-radius: 10px; padding: 10px 12px; }
+  .queue-note { display: none; margin: 0 0 18px; font-size: 13px; color: #8a5a00;
+         background: #fff7e6; border: 1px solid #f0d48a; border-radius: 10px; padding: 10px 12px; }
+  #success { display: none; text-align: center; padding: 30px 22px 26px; }
+  #success .check { width: 72px; height: 72px; border-radius: 50%; background: #e6f6ec;
+    color: #1c7c3e; font-size: 36px; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 16px; }
+  #success h2 { font-size: 19px; margin-bottom: 6px; }
+  #success p { font-size: 14px; color: #66707f; margin-bottom: 20px; }
+  .mycard { background: #f7f9fc; border: 1px solid #e2e7ef; border-radius: 14px;
+            padding: 18px; text-align: left; }
+  .mycard .who { font-size: 17px; font-weight: 700; }
+  .mycard .role { font-size: 13px; color: #66707f; margin: 2px 0 14px; }
+  .actions { display: flex; gap: 10px; }
+  .actions a { flex: 1; text-align: center; text-decoration: none; font-size: 14px; font-weight: 600;
+    padding: 12px 0; border-radius: 10px; }
+  .call { background: #2f6fed; color: #fff; }
+  .mail { background: #e8edf5; color: #1f2a3d; }
+  .save { display: block; margin-top: 10px; text-align: center; font-size: 14px; font-weight: 600;
+    padding: 12px 0; border-radius: 10px; background: #1f2a3d; color: #fff; text-decoration: none; }
+  .foot { text-align: center; font-size: 14px; color: #475569; padding: 14px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="avatar">A</div>
+    <h1>Acid Solution</h1>
+    <p>Facilities Maintenance Operations — mock-up name</p>
+  </div>
+
+  <div class="body" id="formWrap">
+    <div class="pending-banner" id="pendingBanner"></div>
+    <h2>Vendor check-in</h2>
+    <p class="sub">Nice meeting you! Drop your details and I'll have everything filed — no card needed.</p>
+    <form id="vendorForm" autocomplete="on">
+      <label for="fName">Full name</label>
+      <input id="fName" name="name" type="text" required placeholder="Jane Doe">
+
+      <label for="fCompany">Company</label>
+      <input id="fCompany" name="company" type="text" required placeholder="Acme Pumps Ltd.">
+
+      <label for="fContact">Phone or email</label>
+      <input id="fContact" name="contact" type="text" required placeholder="604-555-0134 or jane@acme.com">
+
+      <label for="fWhat">What do you do / what's on display today? <span>(one line)</span></label>
+      <textarea id="fWhat" name="what" required placeholder="Commercial HVAC retrofits, showing the new rooftop units"></textarea>
+
+      <label for="fExp">Area of expertise</label>
+      <select id="fExp" name="expertise" required>
+        <option value="" disabled selected>Pick one…</option>
+        <option>HVAC</option>
+        <option>Electrical</option>
+        <option>Plumbing</option>
+        <option>Fire &amp; Life Safety</option>
+        <option>Building Automation &amp; Controls</option>
+        <option>Elevators &amp; Lifts</option>
+        <option>Power &amp; Generators</option>
+        <option>Water Treatment</option>
+        <option>Equipment &amp; Tools</option>
+        <option>Software &amp; IoT</option>
+        <option>Roofing &amp; Building Envelope</option>
+        <option>Janitorial &amp; Grounds</option>
+        <option>Security Systems</option>
+        <option>Other</option>
+      </select>
+
+      <button class="btn" type="submit" id="submitBtn">Check in</button>
+      <div class="err" id="errBox">Couldn't send — please check your connection and try again.</div>
+    </form>
+  </div>
+
+  <div id="success">
+    <div class="check">✓</div>
+    <h2 id="successTitle">You're checked in!</h2>
+    <p id="successSub">Thanks — I've got your details filed. Here's my card in return:</p>
+    <div class="queue-note" id="queueNote">📶 No connection right now — your check-in is saved on this phone and will send automatically when you're back on the booth network.</div>
+    <div class="mycard">
+      <div class="who">Acid Solution</div>
+      <div class="role">Facilities Maintenance Operations — mock-up name</div>
+      <div class="actions">
+        <a class="call" href="tel:+10000000000">Call</a>
+        <a class="mail" href="mailto:you@example.com">Email</a>
+      </div>
+      <a class="save" id="vcardBtn" href="#">Save my contact</a>
+    </div>
+  </div>
+
+  <div class="foot">Vendor check-in · Acid Solution (mock-up name)</div>
+</div>
+
+<script>
+const API = "/api/checkin";
+const QUEUE_KEY = "ralpVendorQueue";
+
+const RALP_VCARD = [
+  "BEGIN:VCARD", "VERSION:3.0",
+  "FN:Acid Solution", "ORG:Acid Solution",
+  "TITLE:Facilities Maintenance Operations",
+  "TEL;TYPE=CELL:+10000000000", "EMAIL:you@example.com",
+  "END:VCARD"
+].join("\n");
+
+document.getElementById("vcardBtn").href =
+  "data:text/vcard;charset=utf-8," + encodeURIComponent(RALP_VCARD);
+document.getElementById("vcardBtn").download = "acid-solution-contact.vcf";
+
+const getQueue = () => {
+  try { return JSON.parse(localStorage.getItem(QUEUE_KEY)) || []; }
+  catch { return []; }
+};
+const setQueue = (q) => {
+  try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch {}
+};
+const sendEntry = async (entry) => {
+  const res = await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entry)
+  });
+  if (res.status === 409) {
+    const err = new Error("already checked in");
+    err.isDuplicate = true;
+    throw err;
+  }
+  if (!res.ok) throw new Error("server " + res.status);
+};
+const updatePendingBanner = () => {
+  const q = getQueue();
+  const b = document.getElementById("pendingBanner");
+  if (q.length) {
+    b.style.display = "block";
+    b.textContent = q.length + (q.length === 1 ? " check-in" : " check-ins") +
+      " saved on this phone — will send automatically when you're back on the booth network.";
+  } else {
+    b.style.display = "none";
+  }
+};
+const showSuccess = (queued) => {
+  document.getElementById("formWrap").style.display = "none";
+  document.getElementById("success").style.display = "block";
+  document.getElementById("queueNote").style.display = queued ? "block" : "none";
+  if (queued) {
+    document.getElementById("successTitle").textContent = "Saved!";
+    document.getElementById("successSub").textContent =
+      "Thanks — I've got your details right here on this phone.";
+  }
+  window.scrollTo(0, 0);
+};
+const flushQueue = async () => {
+  const q = getQueue();
+  if (!q.length) return;
+  const remaining = [];
+  for (const entry of q) {
+    try { await sendEntry(entry); }
+    catch (ex) {
+      // Already on the list — drop it so it can't block the ones behind it.
+      if (ex.isDuplicate) continue;
+      remaining.push(entry);
+      break;
+    }
+  }
+  setQueue(remaining);
+  updatePendingBanner();
+};
+
+document.getElementById("vendorForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  const err = document.getElementById("errBox");
+  err.style.display = "none";
+  btn.disabled = true;
+  btn.textContent = "Checking in…";
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  try {
+    await sendEntry(data);
+    showSuccess(false);
+  } catch (ex) {
+    if (ex.isDuplicate) {
+      // already on the list — show the card, do NOT queue offline
+      document.getElementById("successTitle").textContent = "Already checked in!";
+      document.getElementById("successSub").textContent =
+        "You're already on the list — here's my card again.";
+      showSuccess(false);
+      return;
+    }
+    const q = getQueue();
+    q.push(data);
+    setQueue(q);
+    showSuccess(true);
+  }
+  window.addEventListener("online", flushQueue);
+});
+
+updatePendingBanner();
+window.addEventListener("online", flushQueue);
+window.addEventListener("load", flushQueue);
+</script>
+</body>
+</html>
